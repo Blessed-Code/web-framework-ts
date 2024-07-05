@@ -5,7 +5,8 @@ import { User } from "./models/User";
 // const newUser = new User({});
 const newUser = new User({ name: "Bernardus Joshua", age: 25 });
 
-newUser.set({ name: "newName" }); // sekarang bisa update 1 aja
+newUser.on("change", () => {});
+newUser.on("change", () => {});
+newUser.on("click", () => {});
 
-console.log(newUser.get("name"));
-console.log(newUser.get("age"));
+console.log(newUser);
