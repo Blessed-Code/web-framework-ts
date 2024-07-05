@@ -5,8 +5,15 @@ import { User } from "./models/User";
 // const newUser = new User({});
 const newUser = new User({ name: "Bernardus Joshua", age: 25 });
 
-newUser.on("change", () => {});
-newUser.on("change", () => {});
-newUser.on("click", () => {});
+newUser.on("change", () => {
+  console.log("change no 1");
+});
+newUser.on("change", () => {
+  console.log("change no 2");
+});
+newUser.on("save", () => {
+  console.log("save was triggered");
+});
 
-console.log(newUser);
+newUser.trigger("change");
+newUser.trigger("save");
