@@ -1,45 +1,36 @@
-interface UserPops {
+import axios, { AxiosResponse } from "axios";
+interface UserProps {
   name?: string; // kasih question mark berarti opsional
   age?: number;
+  id?: number;
 }
 
-// type () => {} artinya function yang gak terima arguments dan returnya object
-// ini jadi membingungkan karena ini syntax type alias
-type Callback = () => void;
-
 export class User {
-  // karena gak tau key dalem objectnya apa aja kita specifynya begini
-  // dimana events adalah object, apapun nama keynya tipenya string, dan valuenya array of Callback
-  events: { [key: string]: Callback[] } = {};
-
   // constructor(private data: { name: string; age: number }) {} // daripada buat pake object literal mending kita buat pake interface
-  constructor(private data: UserPops) {}
+  constructor(private data: UserProps) {}
 
   get(propName: string): string | number {
     return this.data[propName];
   }
 
-  set(update: UserPops): void {
+  set(update: UserProps): void {
     // karena props udah opsional kita bsia update salah satu aja
     Object.assign(this.data, update);
   }
 
-  // on(eventName: string, callback: () => void) {} // daripada nulis langsung begitu, mending typenya kita pakein type alias
-  on(eventName: string, callback: Callback): void {
-    const handlers = this.events[eventName] || [];
-    handlers.push(callback);
-    this.events[eventName] = handlers;
+  fetch(): void {
+    axios.get(`http://localhost:3000/users/${this.get("id")}`).then((response: AxiosResponse) => {
+      this.set(response.data);
+    });
   }
 
-  trigger(eventName: string): void {
-    const handlers = this.events[eventName];
+  save(): void {
+    const id = this.get("id");
 
-    if (!handlers || handlers.length === 0) {
-      return;
+    if (id) {
+      axios.put(`http://localhost:3000/users/${id}`, this.data);
+    } else {
+      axios.post("http://localhost:3000/users/", this.data);
     }
-
-    handlers.forEach((callback) => {
-      callback();
-    });
   }
 }
